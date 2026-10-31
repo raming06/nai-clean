@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light"><title>NAI Clean — 사진만 남기세요</title>
+<style>
+:root{--ink:#282532;--sub:#797381;--line:#eae5e7;--accent:#765b83;--soft:#f5eef4;--bg:#fcfbf9;--white:#fff;--danger:#ad5064}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.7 system-ui,-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif}
+button,input{font:inherit}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.45}button:focus-visible,.drop:focus-visible{outline:3px solid #b69cc8;outline-offset:3px}
+.container{max-width:890px;margin:auto;padding:0 19px 70px}.mast{display:flex;justify-content:space-between;align-items:center;padding:30px 0 70px;gap:15px}.wordmark{font-weight:750;font-size:20px;letter-spacing:-.8px}.wordmark em{font-style:normal;color:var(--accent)}.safe{font-size:12px;color:var(--sub)}
+.hero{text-align:center;padding-bottom:35px}.eyebrow{font-size:11px;font-weight:750;letter-spacing:2.2px;color:var(--accent)}h1{font-size:clamp(32px,6vw,54px);line-height:1.32;letter-spacing:-2px;font-weight:760;margin:14px 0 21px}p{margin:0}.hero p{color:var(--sub);line-height:1.9}.drop{border:1.5px dashed #c8bccb;background:white;border-radius:22px;min-height:230px;display:flex;align-items:center;justify-content:center;text-align:center;padding:31px 20px;flex-direction:column;transition:.15s}.drop.drag{border-color:var(--accent);background:#f9f2fa}.drop .glyph{font-size:40px;color:var(--accent);line-height:1}.drop h2{font-size:19px;margin:17px 0 4px}.drop p{color:var(--sub);font-size:13px}.button{display:inline-flex;align-items:center;justify-content:center;border-radius:12px;border:1px solid transparent;background:var(--ink);color:white;padding:10px 20px;line-height:1.45;font-weight:670;min-height:44px;gap:6px}.button:hover:not(:disabled){filter:brightness(1.1)}.button.secondary{background:white;border-color:#ddd6df;color:var(--ink)}.button.muted{background:var(--soft);color:var(--accent)}.button.red{background:white;color:var(--danger);border-color:#efdbdd}.drop .button{margin:15px 0 8px}.example{display:flex;justify-content:center;gap:8px;align-items:center;flex-wrap:wrap;margin:20px auto 32px;color:var(--sub);font-size:12px}.example code{font:inherit;background:#f5f0f3;padding:3px 8px;border-radius:7px}.example strong{color:var(--accent)}
+.settings{border:1px solid var(--line);background:white;border-radius:18px;padding:23px 26px;margin-bottom:32px}.settings h2,.result-title h2{font-size:18px;margin:0 0 14px}.setting{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid #f3f0f1}.setting:last-of-type{border-bottom:none}.tick{color:var(--accent);font-weight:bold}.hint{margin-top:15px;padding:12px 14px;background:#faf8fa;color:var(--sub);font-size:12px;border-radius:10px}.results{padding-top:7px}.result-title{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:15px}.result-title h2{margin:0}.controls{display:flex;gap:8px;flex-wrap:wrap}.controls .button{font-size:13px;padding:9px 12px}.status{color:var(--sub);font-size:13px;padding:12px 14px;background:#f6f1f6;border-radius:10px;margin:0 0 18px}.status.error{background:#fff0f1;color:var(--danger)}.empty{text-align:center;padding:72px 15px;border:1px solid var(--line);border-radius:16px;background:white;color:var(--sub)}.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}.photo{background:white;border:1px solid var(--line);border-radius:15px;padding:12px;min-width:0}.photo img{display:block;object-fit:contain;width:100%;height:180px;border-radius:9px;background:#f8f7f7}.photo .name{font-size:13px;font-weight:680;overflow-wrap:anywhere;margin-top:9px}.photo .meta{font-size:11px;color:var(--sub)}.photo .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.photo .actions button{flex:1;padding:8px 6px;font-size:12px;min-height:38px}.photo .thumb{position:relative}.photo .remove-photo{position:absolute;top:8px;right:8px;display:flex;align-items:center;justify-content:center;width:30px;height:30px;padding:0;border:1px solid #e9e3e9;border-radius:50%;background:rgba(255,255,255,.96);color:var(--ink);font-size:22px;line-height:1;box-shadow:0 2px 8px #0002;z-index:1}.photo .remove-photo:hover:not(:disabled){color:var(--danger);background:#fff4f5}.photo .remove-photo:focus-visible{outline:3px solid #b69cc8;outline-offset:2px}
+.instructions{margin-top:41px;padding:25px;border-top:1px solid var(--line)}.instructions h2{font-size:18px}.instructions p{color:var(--sub);font-size:13px;margin:8px 0}.instructions strong{color:var(--ink)}footer{text-align:center;color:#a39aa4;font-size:10px;letter-spacing:1.6px;padding-top:20px}dialog{border:0;border-radius:17px;padding:17px;max-width:min(94vw,780px);max-height:90vh;box-shadow:0 20px 70px #24203033}dialog::backdrop{background:#2228}dialog img{display:block;max-width:100%;max-height:67vh;margin:10px auto;object-fit:contain}dialog .dialog-head{display:flex;justify-content:space-between;gap:15px}.dialog-head button{border:0;background:#f7f3f8;padding:2px 12px;border-radius:6px}.dialog-actions{display:flex;justify-content:center;gap:10px;margin-top:13px}.dialog p{color:var(--sub);font-size:12px}.progress{height:5px;border-radius:8px;background:#f0e9f1;overflow:hidden;margin:8px 0}.progress>div{height:100%;width:0;background:var(--accent);transition:width .15s}
+.format-choices{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.format-choices label{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid var(--line);border-radius:9px;cursor:pointer;font-size:13px}.format-choices input{accent-color:var(--accent)}.format-choices label:has(input:checked){border-color:var(--accent);background:var(--soft);font-weight:700}.format-choices label:has(input:disabled){opacity:.6;cursor:wait}#formatHint{font-size:12px;color:var(--sub);margin:8px 0 0;line-height:1.7}
+@media(max-width:530px){.format-setting{align-items:flex-start;flex-direction:column}.format-choices{justify-content:flex-start}}
+@media(max-width:530px){.mast{padding:17px 0 47px}.settings{padding:18px}.hero{padding-bottom:28px}.result-title{align-items:flex-start}.controls{width:100%}.controls .button{flex:1;white-space:nowrap}.drop{min-height:225px}.instructions{padding:23px 8px}}
+
+/* v14 visual refresh — CSS-only. Core processing, deletion and gallery-friendly ZIP logic unchanged. */
+:root {
+  --ink:#292538;
+  --sub:#777181;
+  --line:#e9e6ee;
+  --accent:#76609a;
+  --soft:#f3effa;
+  --bg:#faf9fc;
+  --white:#fff;
+  --danger:#b75a74;
+  --shadow:0 12px 38px rgba(54,41,79,.045);
+}
+html { -webkit-tap-highlight-color:transparent; }
+body {
+  background:radial-gradient(ellipse 66% 390px at 50% 82px, #f2eefb 0%, rgba(249,248,252,0) 79%),var(--bg);
+  font-family:system-ui,-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+  font-size:14px;
+  line-height:1.7;
+  -webkit-font-smoothing:antialiased;
+}
+.container {max-width:922px;padding:0 28px 66px;}
+.mast {
+  padding:28px 0 28px;
+  margin-bottom:47px;
+  border-bottom:1px solid rgba(118,96,154,.12);
+}
+.wordmark {font-size:20px;letter-spacing:-.9px;font-weight:780;}
+.wordmark em {color:var(--accent);}
+.safe {display:flex;align-items:center;gap:5px;font-size:11px;color:#80798e;letter-spacing:-.1px;}
+.hero {padding-bottom:34px;}
+.eyebrow {
+  display:inline-block;
+  padding:7px 13px 6px;
+  font-size:10px;
+  letter-spacing:1.45px;
+  font-weight:740;
+  border:1px solid #e5def1;
+  background:#f7f3fc;
+  color:#7f6a9c;
+  border-radius:999px;
+}
+h1 {
+  font-size:clamp(34px,5vw,49px);
+  font-weight:760;
+  line-height:1.35;
+  letter-spacing:-2.3px;
+  margin:21px 0 15px;
+}
+.hero p {font-size:14px;color:#797382;line-height:1.9;letter-spacing:-.25px;}
+.drop {
+  position:relative;
+  min-height:247px;
+  padding:29px 20px 32px;
+  border-radius:22px;
+  border:1.5px dashed #c8bddc;
+  background:linear-gradient(135deg,rgba(255,255,255,.98),#fbf9ff);
+  box-shadow:0 12px 35px rgba(69,51,98,.055), inset 0 0 0 5px rgba(255,255,255,.55);
+  transition:border-color .18s, box-shadow .18s, background .18s, transform .18s;
+}
+.drop:hover {border-color:#a58fcb;box-shadow:0 16px 38px rgba(69,51,98,.085), inset 0 0 0 5px rgba(255,255,255,.65);}
+.drop.drag {border-color:#8063b7;background:#f7f2ff;transform:translateY(-1px);}
+.drop .glyph {
+  width:60px;height:60px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:32px;line-height:1;
+  border:1px solid #eae3f5;
+  border-radius:20px;
+  background:#f3eefb;
+  color:#8064a8;
+  box-shadow:0 6px 14px rgba(101,72,144,.07);
+}
+.drop h2 {font-size:18px;font-weight:760;letter-spacing:-.55px;margin:14px 0 1px;}
+.drop p {font-size:12px;color:#867d92;}
+.drop small {font-size:11px;letter-spacing:.12px;}
+.button {
+  min-height:42px;
+  padding:10px 19px;
+  font-size:13px;
+  letter-spacing:-.18px;
+  font-weight:680;
+  border-radius:11px;
+  background:#302b42;
+  color:#fff;
+  box-shadow:0 3px 7px rgba(37,32,54,.08);
+  transition:background .16s,transform .16s,box-shadow .16s,border-color .16s;
+}
+.button:hover:not(:disabled) {filter:none;background:#49415f;transform:translateY(-1px);box-shadow:0 5px 11px rgba(37,32,54,.12);}
+.button:active:not(:disabled){transform:translateY(0);}
+.button.secondary {background:white;color:#5c5669;border-color:#e5e0ea;box-shadow:none;}
+.button.secondary:hover:not(:disabled){background:#f8f6fa;border-color:#cdc5d7;box-shadow:none;}
+.button.muted {background:#f4f0fa;color:#72598e;box-shadow:none;}
+.button.muted:hover:not(:disabled){background:#eae2f6;box-shadow:none;}
+.button.red {background:white;color:var(--danger);border-color:#efdbdd;}
+.drop .button {margin:14px 0 9px;padding:11px 27px;background:#746097;box-shadow:0 5px 15px rgba(118,96,154,.20);}
+.drop .button:hover:not(:disabled){background:#655184;box-shadow:0 6px 18px rgba(118,96,154,.25);}
+.example {margin:22px auto 34px;gap:9px;font-size:11px;color:#a39ba9;}
+.example code {background:#f1eef6;border:1px solid #ebe6f0;color:#73697d;border-radius:8px;padding:5px 10px;}
+.example strong {color:#947bb0;font-size:16px;font-weight:500;}
+.settings {
+  padding:26px 28px 24px;
+  margin-bottom:38px;
+  border:1px solid #ece8f0;
+  border-radius:20px;
+  box-shadow:var(--shadow);
+}
+.settings h2,.result-title h2 {font-size:18px;font-weight:760;letter-spacing:-.6px;}
+.settings h2 {margin:0 0 13px;}
+.setting {padding:11px 0;font-size:13px;color:#514c5f;border-color:#f0edf3;}
+.setting > span:first-child {letter-spacing:-.15px;}
+.tick {
+  display:grid;place-items:center;
+  width:22px;height:22px;
+  border-radius:50%;
+  background:#f0ebf8;
+  font-size:11px;
+  color:#8066a0;
+}
+.format-setting {padding-top:14px;padding-bottom:10px;}
+.format-choices {gap:7px;}
+.format-choices label {
+  border-radius:10px;
+  border:1px solid #e8e3ed;
+  padding:7px 14px;
+  font-size:12px;
+  font-weight:620;
+  color:#787183;
+  background:#fff;
+  transition:background .15s,border-color .15s;
+}
+.format-choices label:has(input:checked) {border-color:#c9bade;background:#f5f0fc;color:#725991;font-weight:750;}
+.format-choices input {width:13px;height:13px;accent-color:#8266a8;}
+#formatHint {font-size:11px;color:#867e92;margin:9px 0 0;line-height:1.7;}
+.hint {margin-top:17px;padding:11px 14px;border-radius:10px;background:#f7f5fa;border:1px solid #f2eff6;color:#797186;font-size:11px;}
+.results {padding-top:0;}
+.result-title {margin-bottom:15px;gap:16px;}
+.result-title h2 {margin:0;}
+#count {
+  display:inline-grid;place-items:center;
+  min-width:25px;height:25px;
+  padding:0 7px;
+  margin-left:4px;
+  background:#f0eafa;
+  color:#8067a3;
+  font-size:12px;
+  letter-spacing:0;
+  border-radius:8px;
+  vertical-align:1px;
+}
+.controls {gap:7px;}
+.controls .button {font-size:12px;min-height:39px;padding:8px 14px;border-radius:10px;}
+.controls #saveAll {background:#746097;}
+.controls #saveAll:hover:not(:disabled){background:#634d87;}
+.status {padding:11px 15px;margin-bottom:15px;background:#f2eef8;border:1px solid #ebe5f4;border-radius:11px;color:#73647f;font-size:12px;line-height:1.65;}
+.status.error {background:#fff1f2;color:var(--danger);border-color:#f6dfe4;}
+.progress {height:5px;border-radius:999px;margin:10px 0 16px;}
+.progress>div {background:#9275b1;}
+.empty {
+  padding:60px 15px;
+  border:1px solid #ece9f0;
+  border-radius:19px;
+  background:linear-gradient(140deg,#fff,#fcfbff);
+  box-shadow:var(--shadow);
+  color:#8d8497;
+  font-size:13px;
+}
+.empty::before {content:'✦';display:block;font-size:20px;line-height:1;margin-bottom:15px;color:#c5b6da;}
+.cards {gap:16px;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));}
+.photo {
+  border-radius:18px;
+  border-color:#ede9f0;
+  padding:12px;
+  box-shadow:0 8px 24px rgba(47,33,70,.04);
+  transition:box-shadow .17s,transform .17s;
+}
+.photo:hover {box-shadow:0 14px 30px rgba(47,33,70,.08);transform:translateY(-1px);}
+.photo .thumb {border-radius:12px;overflow:hidden;background:#f8f7fa;}
+.photo img {height:180px;border-radius:12px;background:#f7f5fa;}
+.photo .remove-photo {top:9px;right:9px;width:30px;height:30px;background:rgba(255,255,255,.96);border:1px solid #ece8f0;box-shadow:0 3px 10px #22133318;font-size:20px;color:#62596a;}
+.photo .name {font-size:13px;font-weight:730;letter-spacing:-.3px;color:#3c364c;margin-top:12px;}
+.photo .meta {font-size:11px;color:#817a8b;}
+.photo .actions {gap:7px;margin-top:13px;}
+.photo .actions button {font-size:12px;min-height:38px;}
+.instructions {margin-top:45px;padding:26px 6px 4px;border-top:1px solid #e9e5ed;}
+.instructions h2 {font-size:17px;letter-spacing:-.5px;font-weight:750;margin:0 0 18px;}
+.instructions p {font-size:12px;line-height:1.9;letter-spacing:-.12px;color:#7d7687;margin:10px 0;}
+.instructions strong {color:#585064;}
+footer {padding-top:30px;color:#b7afbd;font-size:9px;letter-spacing:1.2px;}
+dialog {border:1px solid #f0ecf3;border-radius:20px;padding:20px;box-shadow:0 25px 80px #21162a38;}
+dialog::backdrop {background:rgba(34,25,48,.46);backdrop-filter:blur(4px);}
+dialog .dialog-head {align-items:center;}
+dialog .dialog-head button {padding:6px 12px;border-radius:9px;color:#60546c;cursor:pointer;}
+dialog .dialog-head button:hover {background:#eee8f5;}
+dialog .dialog-actions {margin-top:16px;}
+@media(max-width:650px) {
+  .container{padding:0 17px 54px;}
+  .mast{padding:20px 0 22px;margin-bottom:40px;}
+  .wordmark{font-size:19px;}
+  .safe{font-size:10px;}
+  .hero{padding-bottom:26px;}
+  h1{font-size:clamp(33px,8vw,43px);letter-spacing:-1.75px;margin:18px 0 14px;}
+  .hero p{font-size:12px;line-height:1.85;word-break:keep-all;}
+  .hero p br{display:none;}
+  .drop{min-height:248px;border-radius:18px;padding:24px 17px;}
+  .drop h2{font-size:17px;}
+  .example{margin:18px auto 27px;gap:6px;font-size:10px;}
+  .example code{padding:5px 7px;max-width:45%;overflow-wrap:anywhere;}
+  .settings{padding:21px 18px;margin-bottom:32px;border-radius:17px;}
+  .settings h2{font-size:17px;}
+  .setting{font-size:12px;}
+  .result-title{align-items:stretch;gap:12px;}
+  .result-title h2{width:100%;font-size:18px;}
+  .controls{width:100%;display:grid;grid-template-columns:1fr 1.35fr;gap:8px;}
+  .controls .button{padding:10px 8px;font-size:12px;min-height:41px;white-space:nowrap;}
+  .controls #saveAll{grid-column:2;grid-row:1;}
+  .controls #clear{grid-column:1;grid-row:1;}
+  .cards{grid-template-columns:repeat(auto-fill,minmax(154px,1fr));gap:10px;}
+  .photo{padding:8px;border-radius:15px;}
+  .photo img{height:145px;}
+  .photo .name{margin-top:8px;font-size:12px;}
+  .photo .actions{flex-direction:column;gap:6px;}
+  .photo .actions button{min-height:35px;}
+  .instructions{padding:23px 4px 0;margin-top:35px;}
+}
+@media(max-width:360px) {
+  .safe{font-size:9px;}
+  .cards{grid-template-columns:1fr 1fr;}
+  .photo img{height:120px;}
+}
+@media(prefers-reduced-motion:reduce) {
+  .drop,.button,.photo,.format-choices label {transition:none;}
+  .drop:hover,.button:hover:not(:disabled),.photo:hover {transform:none;}
+}
+
+</style>
+</head>
+<body>
+<main class="container">
+  <header class="mast"><div class="wordmark">✳ NAI <em>Clean</em></div><div class="safe">◉ 내 기기에서만 안전하게</div></header>
+  <section class="hero"><div class="eyebrow">LESS DATA, JUST YOUR ART.</div><h1>정보는 지우고,<br>사진만 남기세요.</h1><p>긴 작가 태그도, 이미지에 담긴 생성 정보도 한 번에.<br>사진을 넣으면 번호만 남긴 깔끔한 PNG 또는 JPG로 바꿔드려요.</p></section>
+  <section class="drop" id="drop" tabindex="0" role="button" aria-label="이미지를 여기에 놓거나 클릭해 선택하세요"><div class="glyph">↥</div><h2>사진을 여기에 놓아주세요</h2><p>여러 장을 한 번에 선택할 수 있어요</p><button type="button" class="button" id="choose">사진 선택하기</button><small style="color:var(--sub)">PNG · JPG · WEBP → PNG / JPG</small><input type="file" accept="image/png,image/jpeg,image/webp" multiple hidden id="files"></section>
+  <div class="example"><code>artist_… , s-3286971577.png</code><strong>→</strong><code>3286971577.png</code></div>
+  <section class="settings"><h2>자동 정리 설정</h2><div class="setting"><span>파일명에서 작가 태그 제거</span><span class="tick">✓</span></div><div class="setting"><span>EXIF · 생성 정보 제거</span><span class="tick">✓</span></div><div class="setting"><span>NAI 숨김 정보 제거</span><span class="tick">✓</span></div>
+    <div class="setting format-setting"><span>결과물 파일 형식</span><div class="format-choices" role="radiogroup" aria-label="결과물 파일 형식"><label><input type="radio" name="exportFormat" value="png" checked> PNG</label><label><input type="radio" name="exportFormat" value="jpg"> JPG</label></div></div>
+    <p id="formatHint">PNG도 갤러리가 인식하는 사진 형식이에요. JPG를 골라도 저장 위치는 바뀌지 않아요.</p>
+    <div class="hint">원본 크기 유지 ✓ &nbsp; 사진을 자르지 않고 정보만 정리해요. JPG는 고화질(95%)로 변환하지만 일부 손실이 있어요.</div></section>
+  <section class="results" id="results"><div class="result-title"><h2>정리한 사진 <span id="count">0</span></h2><div class="controls"><button type="button" class="button secondary" id="clear">전체 비우기</button><button type="button" class="button" id="saveAll">사진 모두 저장 ↓</button></div></div><div id="status" class="status" role="status" aria-live="polite">사진 여러 장은 ZIP 하나로 받아요. JPG를 선택해도 갤러리에 직접 저장되도록 강제할 수는 없어요.</div><div id="progress" class="progress" hidden><div id="progressFill"></div></div><div class="empty" id="empty">아직 사진이 없어요. 위에서 사진을 추가해 주세요.</div><div class="cards" id="cards"></div></section>
+  <section class="instructions"><h2>어떻게 정리하나요?</h2><p><strong>파일명 정리</strong> · 긴 작가 태그를 지우고, 파일명 끝의 <strong>s-숫자</strong>를 우선 사용해요. 없으면 마지막 숫자를 찾고, 숫자가 없으면 001부터 번호를 붙여요. 이름이 겹치면 -2, -3을 덧붙여요.</p><p><strong>이미지 정보 제거</strong> · 사진을 새 이미지로 다시 만들어 EXIF와 NAI 생성 정보를 제거해요. 투명한 부분은 흰색으로 합치고, 숨겨진 데이터가 남지 않도록 색상값의 최하위 비트를 정리해요. 원본의 가로·세로 크기는 유지하지만 색상이 아주 미세하게 달라질 수 있어요. 원본 파일은 그대로 두며, 움직이는 이미지는 첫 화면만 저장해요.</p><p><strong>저장 형식 선택</strong> · PNG 또는 JPG 중 원하는 형식을 선택할 수 있어요. JPG는 품질 95%로 저장하며 압축 과정에서 화질이 조금 달라질 수 있어요.</p><p><strong>사진 저장</strong> · 한 장은 바로 이미지 파일로, 여러 장은 <strong>사진 모두 저장</strong>을 눌러 ZIP 파일 하나로 받아요. ZIP에는 선택한 형식의 사진만 담기고 별도 폴더는 없어요. 압축을 풀면 갤러리에서 사진을 확인할 수 있어요. 기기에 따라 최근 항목이 아니라 이전 날짜에 표시될 수도 있어요. 원하는 사진만 받을 때는 각 사진의 <strong>사진 저장</strong> 버튼을 이용하세요.</p><p><strong>개인정보 보호</strong> · 모든 처리는 기기 안에서 이루어져 사진을 서버로 전송하지 않아요. 새로고침하거나 ‘전체 비우기’를 누르면 처리 결과가 사라져요. 사진 한 장당 50MB, 최대 4천만 픽셀까지 지원해요.</p></section>
+  <footer>NAI CLEAN &nbsp; / &nbsp; A LITTLE LESS, A LITTLE LIGHTER. · v10</footer>
+</main>
+<dialog id="preview"><div class="dialog-head"><b id="previewName"></b><button type="button" id="closePreview" aria-label="닫기">닫기 ×</button></div><img id="previewImg" alt="정리된 사진"><p>아래 사진을 길게 누르거나 우클릭 → 이미지 저장도 가능해요.</p><div class="dialog-actions"><button type="button" id="previewSave" class="button">사진 저장 ↓</button></div></dialog>
+<script>
+'use strict';
+// This is a deliberately self-contained single-file implementation. No upload, external JS, or CDN.
+const $ = id => document.getElementById(id);
+const state = {items: [], names: new Set(), busy: false, archive: null, previewItem: null, format: 'png'};
+const extension = format => format === 'jpg' ? '.jpg' : '.png';
+const formatLabel = () => state.format === 'jpg' ? 'JPG' : 'PNG';
+const $files=$('files'), $cards=$('cards');
+function notice(message,isError=false){$('status').textContent=message;$('status').classList.toggle('error',isError);}
+function humanBytes(n){return n>=1048576?(n/1048576).toFixed(1)+'MB':Math.max(1,Math.ceil(n/1024))+'KB'}
+function cleanName(original){
+  let base=original.replace(/\.[^.]+$/,'');
+  let match=base.match(/(?:^|\W)s\s*-\s*(\d+)(?:\s*\(\d+\))?\s*$/i);
+  if(!match)match=[null,...(base.match(/(\d+)(?!.*\d)/)||[null,''])].slice(0,2);
+  let stem=match?.[1] || String(state.items.length+1).padStart(3,'0');
+  let filename=stem+extension(state.format),suffix=2;
+  while(state.names.has(filename.toLowerCase()))filename=stem+'-'+suffix+++extension(state.format);
+  state.names.add(filename.toLowerCase());return filename;
+}
+function download(blob,name){
+  const href=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=href;a.download=name;a.style.display='none';document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(href),60000);
+}
+function render(){
+  $('count').textContent=state.items.length;
+  $('empty').hidden=state.items.length>0;
+  $('saveAll').disabled=$('clear').disabled=state.busy||state.items.length===0;
+  document.querySelectorAll('input[name=exportFormat]').forEach(input => input.disabled=state.busy);
+  $cards.replaceChildren();
+  for (const item of state.items){
+    const el=document.createElement('article');el.className='photo';
+    const thumb=document.createElement('div');thumb.className='thumb';
+    const pic=document.createElement('img');pic.src=item.url;pic.alt=item.name;pic.loading='lazy';
+    const remove=document.createElement('button');remove.type='button';remove.className='remove-photo';remove.textContent='×';remove.title='이 사진만 삭제';remove.setAttribute('aria-label',`${item.name} 사진만 삭제`);remove.disabled=state.busy;remove.onclick=()=>void removeItem(item);
+    thumb.append(pic,remove);
+    const name=document.createElement('div');name.className='name';name.textContent=item.name;
+    const meta=document.createElement('div');meta.className='meta';meta.textContent=`${item.width} × ${item.height} · ${humanBytes(item.blob.size)}`;
+    const actions=document.createElement('div');actions.className='actions';
+    const single=document.createElement('button');single.type='button';single.className='button secondary';single.textContent='사진 저장 ↓';single.onclick=()=>download(item.blob,item.name);
+    const view=document.createElement('button');view.type='button';view.className='button muted';view.textContent='크게 보기';view.onclick=()=>{state.previewItem=item;$('previewImg').src=item.url;$('previewName').textContent=item.name;$('preview').showModal()};
+    actions.append(single,view);el.append(thumb,name,meta,actions);$cards.append(el);
+  }
+}
+async function removeItem(item){
+  if(state.busy)return;
+  const idx=state.items.indexOf(item);
+  if(idx===-1)return;
+  state.busy=true;
+  state.items.splice(idx,1);
+  state.names.delete(item.name.toLowerCase());
+  state.archive=null;
+  if(state.previewItem===item){state.previewItem=null;if($('preview').open)$('preview').close();}
+  URL.revokeObjectURL(item.url);
+  render();
+  try{
+    if(state.items.length){
+      notice('남은 사진으로 ZIP 다시 준비 중…');
+      $('progress').hidden=false;$('progressFill').style.width='0%';
+      // The working ZIP encoding (including gallery-compatible metadata) stays untouched.
+      state.archive=await buildZip(state.items);
+    }
+    notice(state.items.length?`사진 한 장을 삭제했어요. 남은 ${state.items.length}장만 저장돼요.`:'사진 한 장을 삭제했어요. 남은 사진이 없어요.');
+  }catch(e){
+    notice('사진은 삭제됐지만 ZIP을 만들지 못했어요: '+e.message,true);
+  }finally{
+    state.busy=false;$('progress').hidden=true;$('progressFill').style.width='0%';render();
+  }
+}
+function bitmapFromFile(file){
+  if('createImageBitmap' in window)return createImageBitmap(file,{imageOrientation:'from-image'});
+  return new Promise((resolve,reject)=>{let url=URL.createObjectURL(file);let img=new Image();img.onload=()=>{URL.revokeObjectURL(url);resolve(img)};img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error('이미지를 읽을 수 없어요.'))};img.src=url;});
+}
+function canvasBlob(canvas,format='png'){
+  const type = format === 'jpg' ? 'image/jpeg' : 'image/png';
+  return new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(new Error(format.toUpperCase()+' 저장에 실패했어요.')),type,0.95));
+}
+async function jpegFromPng(cleanPng){
+  const src=await bitmapFromFile(cleanPng);
+  try{
+    const canvas=document.createElement('canvas');canvas.width=src.width;canvas.height=src.height;
+    const ctx=canvas.getContext('2d',{alpha:false});if(!ctx)throw new Error('JPG 변환을 지원하지 않는 브라우저예요.');
+    ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(src,0,0);
+    const jpg=await canvasBlob(canvas,'jpg');canvas.width=0;canvas.height=0;return jpg;
+  } finally {if(src.close)src.close()}
+}
+async function cleanImage(file){
+  if(file.size>50*1024*1024)throw Error('50MB를 초과한 사진이에요.');
+  let src=await bitmapFromFile(file);
+  try{
+    const w=src.width,h=src.height;
+    if(!w||!h||w*h>40000000)throw Error('이미지가 너무 커요(최대 4천만 픽셀).');
+    const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
+    let ctx=canvas.getContext('2d',{alpha:false,willReadFrequently:true});if(!ctx)throw Error('이 브라우저는 이미지 변환을 지원하지 않아요.');
+    ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);ctx.drawImage(src,0,0);
+    // Data in each scanline is normalized; subtle +/-1 in RGB LSB is deliberate.
+    // Tiling keeps memory lower than reading the whole canvas at once.
+    const stripe=Math.max(1,Math.floor(524288/w));
+    for(let y=0;y<h;y+=stripe){
+      let sh=Math.min(stripe,h-y),p=ctx.getImageData(0,y,w,sh),a=p.data;
+      for(let i=0;i<a.length;i+=4){a[i]&=254;a[i+1]&=254;a[i+2]&=254;a[i+3]=255;}
+      ctx.putImageData(p,0,y);
+    }
+    const blob=await canvasBlob(canvas); canvas.width=0;canvas.height=0;
+    return {blob,width:w,height:h};
+  } finally {if(src.close)src.close()}
+}
+async function addFiles(files){
+  if(state.busy)return;
+  const list=Array.from(files).filter(f=>/image\/(png|jpe?g|webp)/i.test(f.type)||/\.(png|jpe?g|webp)$/i.test(f.name));
+  if(!list.length){notice('PNG, JPG, WEBP 사진을 선택해 주세요.',true);return}
+  state.busy=true;state.archive=null;render();$('progress').hidden=false;
+  const errors=[];
+  try{
+    for(let i=0;i<list.length;i++){
+      notice(`사진 정리 중… ${i+1} / ${list.length}`);$('progressFill').style.width=(100*i/list.length)+'%';
+      try{
+        const result=await cleanImage(list[i]);
+        const outputBlob=state.format === 'jpg' ? await jpegFromPng(result.blob) : result.blob;
+        const name=cleanName(list[i].name),url=URL.createObjectURL(outputBlob);
+        state.items.push({...result,masterBlob:result.blob,blob:outputBlob,name,url});
+      }catch(e){errors.push(`${list[i].name}: ${e.message}`)}
+      // Give the browser a chance to paint progress, particularly on Android.
+      await new Promise(r=>setTimeout(r,0));
+    }
+  }finally{ /* Keep buttons disabled while building the ZIP, preserving a click-to-download user gesture. */ }
+  if(state.items.length){
+    try{notice('전체 저장용 ZIP 준비 중…');state.archive=await buildZip(state.items)}
+    catch(e){errors.push('ZIP 생성: '+e.message)}
+  }
+  state.busy=false;$('progress').hidden=true;$('progressFill').style.width='0%';render();
+  notice(errors.length?`${state.items.length}장 준비됨 · 처리 실패 ${errors.length}장 (${errors.slice(0,2).join('; ')})`:`${state.items.length}장 ${formatLabel()}로 준비됐어요. 여러 장은 ZIP 하나로 저장돼요.`,Boolean(errors.length));
+}
+// ZIP file format, method 0 (STORE): no dependency on JSZip.
+// Archive entries are root-level .png or .jpg files, without nested folders.
+const te=new TextEncoder();
+let crcTable=(()=>{let t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=(c&1)?(0xedb88320^(c>>>1)):(c>>>1);t[n]=c>>>0}return t})();
+async function crcBlob(blob){
+  let crc=0xffffffff;
+  if(typeof blob.stream==='function'){
+    const reader=blob.stream().getReader();
+    for(;;){const {value,done}=await reader.read();if(done)break;for(let i=0;i<value.length;i++)crc=crcTable[(crc^value[i])&255]^(crc>>>8)}
+  }else{
+    const data=new Uint8Array(await blob.arrayBuffer());for(let i=0;i<data.length;i++)crc=crcTable[(crc^data[i])&255]^(crc>>>8);
+  }
+  return (crc^0xffffffff)>>>0;
+}
+function header(bytes,fn){const b=new Uint8Array(bytes),v=new DataView(b.buffer);fn(v);return b}
+// ZIP DOS timestamp plus Info-ZIP Extended Timestamp (0x5455).
+// Previously both ZIP header dates were set to zero (1980-01-01), which can
+// cause extracted images to be placed far back in a date-sorted gallery.
+function zipPhotoTimestamp(date){
+  const year=Math.max(1980,Math.min(2107,date.getFullYear()));
+  const dosDate=((year-1980)<<9)|((date.getMonth()+1)<<5)|date.getDate();
+  const dosTime=(date.getHours()<<11)|(date.getMinutes()<<5)|Math.floor(date.getSeconds()/2);
+  const unix=Math.max(0,Math.min(0xffffffff,Math.floor(date.getTime()/1000)));
+  const extended=header(9,d=>{
+    d.setUint16(0,0x5455,true); // extended timestamp header id
+    d.setUint16(2,5,true);      // 1 flag byte + 4 mtime bytes
+    d.setUint8(4,1);           // mtime is present
+    d.setUint32(5,unix,true);  // actual timestamp (UTC epoch seconds)
+  });
+  return {dosDate,dosTime,extended};
+}
+async function buildZip(items){
+  if(items.length>65535)throw Error('ZIP에 파일이 너무 많아요.');
+  const parts=[],central=[];let offset=0,centralSize=0;
+  const {dosDate,dosTime,extended}=zipPhotoTimestamp(new Date());
+  for(let idx=0;idx<items.length;idx++){
+    const item=items[idx],filename=te.encode(item.name),size=item.blob.size;
+    if(size>=0xffffffff)throw Error('한 장의 크기가 ZIP 한도를 초과했어요.');
+    const crc=await crcBlob(item.blob);
+    const local=header(30+filename.length+extended.length,d=>{
+      d.setUint32(0,0x04034b50,true);d.setUint16(4,20,true);d.setUint16(6,0x0800,true);
+      d.setUint16(8,0,true);d.setUint16(10,dosTime,true);d.setUint16(12,dosDate,true);
+      d.setUint32(14,crc,true);d.setUint32(18,size,true);d.setUint32(22,size,true);d.setUint16(26,filename.length,true);d.setUint16(28,extended.length,true);
+      new Uint8Array(d.buffer,30).set(filename);new Uint8Array(d.buffer,30+filename.length).set(extended);
+    });
+    const directory=header(46+filename.length+extended.length,d=>{
+      d.setUint32(0,0x02014b50,true);d.setUint16(4,20,true);d.setUint16(6,20,true);d.setUint16(8,0x0800,true);
+      d.setUint16(10,0,true);d.setUint16(12,dosTime,true);d.setUint16(14,dosDate,true);
+      d.setUint32(16,crc,true);d.setUint32(20,size,true);d.setUint32(24,size,true);d.setUint16(28,filename.length,true);
+      d.setUint16(30,extended.length,true);d.setUint16(32,0,true);d.setUint16(34,0,true);d.setUint16(36,0,true);
+      d.setUint32(38,0x20,true);d.setUint32(42,offset,true);
+      new Uint8Array(d.buffer,46).set(filename);new Uint8Array(d.buffer,46+filename.length).set(extended);
+    });
+    if(offset+local.length+size>=0xffffffff)throw Error('ZIP 전체 크기가 4GB를 넘었어요.');
+    parts.push(local,item.blob);central.push(directory);
+    offset+=local.length+size;centralSize+=directory.length;
+    $('progressFill').style.width=(100*(idx+1)/items.length)+'%';
+  }
+  const end=header(22,d=>{
+    d.setUint32(0,0x06054b50,true);d.setUint16(4,0,true);d.setUint16(6,0,true);
+    d.setUint16(8,items.length,true);d.setUint16(10,items.length,true);
+    d.setUint32(12,centralSize,true);d.setUint32(16,offset,true);d.setUint16(20,0,true);
+  });
+  return new Blob([...parts,...central,end],{type:'application/zip'});
+}
+function saveArchive(alwaysZip){
+  if(state.busy||!state.items.length)return;
+  if(!alwaysZip&&state.items.length===1){
+    const item=state.items[0];download(item.blob,item.name);
+    notice(`사진 1장을 ${formatLabel()} 파일로 다운로드 요청했어요. 갤러리 → 앨범 → 다운로드를 확인해 보세요.`);return;
+  }
+  if(!state.archive){notice('ZIP을 아직 준비하지 못했어요. 사진을 다시 추가해 주세요.',true);return;}
+  // ZIP is already prepared, so a.click() runs synchronously within the actual click handler.
+  // This avoids losing the user-activation gesture while calculating CRCs/asynchronously zipping.
+  download(state.archive,'NAI-Clean-Images.zip');
+  notice(`사진 ${state.items.length}장이 들어 있는 ZIP을 다운로드 요청했어요. 압축을 풀면 ${formatLabel()} 파일 ${state.items.length}장이 나와요. 갤러리에 안 보이면 내 파일에서 Pictures 폴더로 이동해 보세요.`);
+}
+async function changeFormat(newFormat){
+  if(state.busy || !['png','jpg'].includes(newFormat))return;
+  if(newFormat===state.format)return;
+  const oldFormat=state.format;
+  state.busy=true;render();$('progress').hidden=false;$('progressFill').style.width='0%';
+  let next=[];
+  try{
+    for(let i=0;i<state.items.length;i++){
+      notice(`저장 형식 변경 중… ${i+1} / ${state.items.length}`);
+      const item=state.items[i];
+      const blob=newFormat==='jpg'?await jpegFromPng(item.masterBlob):item.masterBlob;
+      const name=item.name.replace(/\.(?:png|jpe?g)$/i,extension(newFormat));
+      next.push({...item,blob,name,url:URL.createObjectURL(blob)});
+      $('progressFill').style.width=`${100*(i+1)/state.items.length}%`;
+      await new Promise(resolve=>setTimeout(resolve,0));
+    }
+    const archive=next.length?await buildZip(next):null;
+    state.items.forEach(item=>URL.revokeObjectURL(item.url));
+    state.items=next;state.archive=archive;
+    state.names=new Set(next.map(item=>item.name.toLowerCase()));
+    state.format=newFormat;
+    state.previewItem=null;if($('preview').open)$('preview').close();
+    notice(`${next.length}장 ${formatLabel()}로 준비됐어요. 변환된 사진은 ZIP 안에 들어 있어요.`);
+  } catch(e){
+    next.forEach(item=>URL.revokeObjectURL(item.url));
+    document.querySelector(`input[name=exportFormat][value=${oldFormat}]`).checked=true;
+    notice('저장 형식을 변경하지 못했어요: '+e.message,true);
+  } finally {
+    state.busy=false;$('progress').hidden=true;$('progressFill').style.width='0%';render();
+  }
+}
+for(const input of document.querySelectorAll('input[name=exportFormat]'))input.onchange=()=>{if(input.checked)void changeFormat(input.value)};
+$('choose').onclick=e=>{e.stopPropagation();$files.click()};$('drop').onclick=()=>$files.click();
+$('drop').onkeydown=e=>{if((e.key==='Enter'||e.key===' ')&&e.target===$('drop')){e.preventDefault();$files.click()}};
+$files.onchange=()=>{addFiles($files.files);$files.value=''};
+for(const t of ['dragenter','dragover'])$('drop').addEventListener(t,e=>{e.preventDefault();$('drop').classList.add('drag')});
+for(const t of ['dragleave','drop'])$('drop').addEventListener(t,e=>{e.preventDefault();$('drop').classList.remove('drag')});
+$('drop').addEventListener('drop',e=>addFiles(e.dataTransfer.files));
+$('clear').onclick=()=>{for(const x of state.items)URL.revokeObjectURL(x.url);state.items=[];state.archive=null;state.names.clear();render();notice('사진 목록을 비웠어요.')};
+$('saveAll').onclick=()=>saveArchive(false);
+$('closePreview').onclick=()=>$('preview').close();$('previewSave').onclick=()=>{const x=state.previewItem;if(x)download(x.blob,x.name)};
+render();
+</script>
+</body></html>
